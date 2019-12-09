@@ -52,12 +52,11 @@ class CRM_CiviExportExcel_Utils_SearchExport {
       }
     }
 
-    include('PHPExcel/Classes/PHPExcel.php');
-    $objPHPExcel = new PHPExcel();
+    $objPHPExcel = new \PhpOffice\PhpSpreadsheet\Spreadsheet();
 
     // Does magic things for date cells
     // https://phpexcel.codeplex.com/discussions/331005
-    PHPExcel_Cell::setValueBinder(new PHPExcel_Cell_AdvancedValueBinder());
+    \PhpOffice\PhpSpreadsheet\Cell\Cell::setValueBinder(new \PhpOffice\PhpSpreadsheet\Cell\AdvancedValueBinder());
 
     // Set document properties
     $objPHPExcel->getProperties()
@@ -75,13 +74,11 @@ class CRM_CiviExportExcel_Utils_SearchExport {
     $cpt = 1;
 
     foreach ($headers as $h) {
-      try {
+      $cell = $cells[$col] . $cpt;
+
       $objPHPExcel->getActiveSheet()
-        ->setCellValue($cells[$col] . $cpt, $h);
-      }
-      catch (Exception $e) {
-        die(print_r($e, 1));
-      }
+        ->setCellValue($cell, $h)
+        ->getStyle($cell)->applyFromArray(['font' => ['bold' => true]]);
 
       $col++;
     }
@@ -107,23 +104,15 @@ class CRM_CiviExportExcel_Utils_SearchExport {
         // Remove HTML, unencode entities
         $value = html_entity_decode(strip_tags($value));
 
-        if (substr($value, 0, 1) == '=') {
-          // For 'copy of sent email' activities starting with '===', the lib detects those
-          // as incorrect formulas, which causes fatal errors.
-          $objPHPExcel->getActiveSheet()
-            ->setCellValueExplicit($cells[$col] . $cpt, $value, \PhpOffice\PhpSpreadsheet\Cell\DataType::TYPE_STRING);
-        }
-        else {
-          $objPHPExcel->getActiveSheet()
-            ->setCellValue($cells[$col] . $cpt, $value);
-        }
+        $objPHPExcel->getActiveSheet()
+          ->setCellValue($cells[$col] . $cpt, $value);
 
         // Cell formats
         if (CRM_Utils_Array::value('type', $columnHeaders[$k]) & CRM_Utils_Type::T_DATE) {
           $objPHPExcel->getActiveSheet()
             ->getStyle($cells[$col] . $cpt)
             ->getNumberFormat()
-            ->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_DATE_YYYYMMDD);
+            ->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_DATE_YYYYMMDD);
 
           // Set autosize on date columns. 
           // We only do it for dates because we know they have a fixed width, unlike strings.
@@ -133,7 +122,7 @@ class CRM_CiviExportExcel_Utils_SearchExport {
         elseif (CRM_Utils_Array::value('type', $columnHeaders[$k]) & CRM_Utils_Type::T_MONEY) {
           $objPHPExcel->getActiveSheet()->getStyle($cells[$col])
             ->getNumberFormat()
-            ->setFormatCode(PHPExcel_Style_NumberFormat::FORMAT_GENERAL);
+            ->setFormatCode(\PhpOffice\PhpSpreadsheet\Style\NumberFormat::FORMAT_GENERAL);
         }
 
         $col++;
@@ -142,7 +131,7 @@ class CRM_CiviExportExcel_Utils_SearchExport {
       $cpt++;
     }
 
-    $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel2007');
+    $objWriter = \PhpOffice\PhpSpreadsheet\IOFactory::createWriter($objPHPExcel, 'Xlsx');
     $objWriter->save('php://output');
 
     return ''; // FIXME
