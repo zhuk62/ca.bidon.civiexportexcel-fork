@@ -181,6 +181,9 @@ function civiexportexcel_legacyBuildFormExport($form) {
   // This seems to cause more problems than it fixes.
   // $form->formatDisplay($rows);
 
+  //Alter display for rows without formatDisplay
+  $form->alterDisplay($rows);
+
   // assign variables to templates
   $form->doTemplateAssignment($rows);
 
