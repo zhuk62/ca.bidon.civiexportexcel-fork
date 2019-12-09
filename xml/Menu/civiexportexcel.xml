@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<menu>
+  <item>
+    <path>civicrm/admin/setting/exportexcel</path>
+    <page_callback>CRM_CiviExportExcel_Form_ExportExcelSettings</page_callback>
+    <title>ExportExcelSettings</title>
+    <access_arguments>access CiviCRM</access_arguments>
+  </item>
+</menu>

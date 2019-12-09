@@ -6,10 +6,10 @@
  * The ExtensionUtil class provides small stubs for accessing resources of this
  * extension.
  */
-class CRM_Civiexportexcel_ExtensionUtil {
+class CRM_CiviExportExcel_ExtensionUtil {
   const SHORT_NAME = "civiexportexcel";
   const LONG_NAME = "ca.bidon.civiexportexcel";
-  const CLASS_PREFIX = "CRM_Civiexportexcel";
+  const CLASS_PREFIX = "CRM_CiviExportExcel";
 
   /**
    * Translate a string using the extension's domain.
@@ -77,7 +77,7 @@ class CRM_Civiexportexcel_ExtensionUtil {
 
 }
 
-use CRM_Civiexportexcel_ExtensionUtil as E;
+use CRM_CiviExportExcel_ExtensionUtil as E;
 
 /**
  * (Delegated) Implements hook_civicrm_config().
@@ -205,14 +205,14 @@ function _civiexportexcel_civix_civicrm_upgrade($op, CRM_Queue_Queue $queue = NU
 }
 
 /**
- * @return CRM_Civiexportexcel_Upgrader
+ * @return CRM_CiviExportExcel_Upgrader
  */
 function _civiexportexcel_civix_upgrader() {
-  if (!file_exists(__DIR__ . '/CRM/Civiexportexcel/Upgrader.php')) {
+  if (!file_exists(__DIR__ . '/CRM/CiviExportExcel/Upgrader.php')) {
     return NULL;
   }
   else {
-    return CRM_Civiexportexcel_Upgrader_Base::instance();
+    return CRM_CiviExportExcel_Upgrader_Base::instance();
   }
 }
 
@@ -269,10 +269,10 @@ function _civiexportexcel_civix_civicrm_managed(&$entities) {
       if (empty($e['module'])) {
         $e['module'] = E::LONG_NAME;
       }
-      $entities[] = $e;
       if (empty($e['params']['version'])) {
         $e['params']['version'] = '3';
       }
+      $entities[] = $e;
     }
   }
 }
