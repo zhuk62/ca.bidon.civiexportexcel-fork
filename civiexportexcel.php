@@ -162,6 +162,9 @@ function civiexportexcel_legacyBuildFormExport($form) {
   $printOnly = TRUE;
   $form->assign('outputMode', 'excel2007');
 
+  //imitation of excel export
+  $form->setVar('_outputMode', 'csv');
+
   // FIXME: this duplicates part of CRM_Report_Form::postProcess()
   // since we do not have a place to hook into, we hi-jack the form process
   // before it gets into postProcess.
@@ -179,10 +182,7 @@ function civiexportexcel_legacyBuildFormExport($form) {
 
   // format result set.
   // This seems to cause more problems than it fixes.
-  // $form->formatDisplay($rows);
-
-  //Alter display for rows without formatDisplay
-  $form->alterDisplay($rows);
+  $form->formatDisplay($rows);
 
   // assign variables to templates
   $form->doTemplateAssignment($rows);
