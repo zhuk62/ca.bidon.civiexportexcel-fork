@@ -182,7 +182,10 @@ function civiexportexcel_legacyBuildFormExport($form) {
 
   // format result set.
   // This seems to cause more problems than it fixes.
-  $form->formatDisplay($rows);
+  //$form->formatDisplay($rows);
+
+  $form->alterDisplay($rows);
+  $form->alterCustomDataDisplay($rows);
 
   // assign variables to templates
   $form->doTemplateAssignment($rows);
